@@ -1,17 +1,15 @@
 
 name: Deploy-rest-crud-aws-main
-
 on:
   # Ejecuta el flujo de trabajo cuando se haga push en master o dev
   push:
     branches:
       - master
       - dev
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 30 # Tiempo máximo de espera para este job
 
     steps:
       - name: 1. Checkout code
@@ -21,10 +19,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
+          
       - name: 3. Install Project Dependencies
         run: npm install
 
       - name: 4. Install Serverless Framework
+        # Se incluye serverless-appsync-plugin aunque no se usa en este CRUD REST
         run: npm install -g serverless serverless-appsync-plugin
 
       - name: 5. Configure AWS Credentials
@@ -37,11 +37,21 @@ jobs:
       - name: 6. Determine Deployment Stage
         id: set_stage
         run: |
+          # Determina si el despliegue es 'production' o 'dev' basado en la rama
           if [[ "${GITHUB_REF##*/}" == "master" ]]; then
             echo "stage=production" >> $GITHUB_ENV
           else
             echo "stage=dev" >> $GITHUB_ENV
-            fi
+          fi
+          
       - name: 7. Deploy with Serverless
+        # El comando usa la variable de entorno 'stage' definida en el paso anterior
         run: serverless deploy --stage ${{ env.stage }}
+        env:
+          # Estas variables de entorno deben coincidir con la tabla de la etapa (ej. 'inventory-items-dev')
+          DYNAMODB_TABLE: inventory-items-${{ env.stage }}
+          
+      - name: 8. Show API Endpoint
+        # Muestra el endpoint de la API para la etapa desplegada
+        run: sls info --stage ${{ env.stage }}
 
