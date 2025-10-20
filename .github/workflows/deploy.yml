@@ -1,45 +1,49 @@
-name: deploy-coffee-shop-api
+
+name: Deploy-rest-crud-aws-main
 
 on:
+  # Ejecuta el flujo de trabajo cuando se haga push en master o dev
   push:
     branches:
-      - main
+      - master
       - dev
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20.x'
-        
-    - name: Install dependencies
-      # 🚨 CORRECCIÓN: Quitamos el 'working-directory' porque package.json está en la raíz
-      run: npm install
-      
-    - name: Install Serverless Framework
-      run: npm install -g serverless
-      
-    - name: Deploy to AWS (Dev)
-      if: github.ref == 'refs/heads/dev'
-      # 🚨 CORRECCIÓN: Ejecutamos el despliegue desde la raíz, sin CD ni --config
-      run: npx serverless deploy --stage dev
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        
-    - name: Deploy to AWS (Prod)
-      if: github.ref == 'refs_heads/main'
-      # 🚨 CORRECCIÓN: Ejecutamos el despliegue desde la raíz, sin CD ni --config
-      run: npx serverless deploy --stage prod
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    timeout-minutes: 30
 
+    steps:
+      - name: 1. Checkout code
+        uses: actions/checkout@v4
+
+      - name: 2. Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: 3. Install Project Dependencies
+        run: npm install
+
+      - name: 4. Install Serverless Framework
+        run: npm install -g serverless serverless-appsync-plugin
+
+      - name: 5. Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: 6. Determine Deployment Stage
+        id: set_stage
+        run: |
+          if [[ "${GITHUB_REF##*/}" == "master" ]]; then
+            echo "stage=production" >> $GITHUB_ENV
+          else
+            echo "stage=dev" >> $GITHUB_ENV
+          fi
+
+      - name: 7. Deploy with Serverless
+        run: serverless deploy --stage ${{ env.stage }}
 
