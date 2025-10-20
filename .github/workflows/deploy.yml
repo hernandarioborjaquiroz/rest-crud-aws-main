@@ -41,7 +41,7 @@ jobs:
             echo "stage=production" >> $GITHUB_ENV
           else
             echo "stage=dev" >> $GITHUB_ENV
-          fi
+            fi
       - name: 7. Deploy with Serverless
         run: serverless deploy --stage ${{ env.stage }}
 
