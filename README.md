@@ -202,7 +202,8 @@ resources:
             KeyType: HASH
 ```
 
----
+---<img width="1024" height="1024" alt="Gemini_Generated_Image_1i2qvl1i2qvl1i2qvisualizacionapplocal" src="https://github.com/user-attachments/assets/a3cdfb03-a48d-4f03-94df-835fe31450dd" />
+
 
 ## 🏗️ CI/CD Backend – CodeBuild (`.aws/buildspec.yml`)
 
