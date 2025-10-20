@@ -55,7 +55,7 @@ flowchart LR
 ---
 
 ## 🖼️ Capturas (CodePipeline / CodeBuild / API / DynamoDB / Amplify)
-
+Descripción de los Componentes 🏗️ComponenteCategoríaFunción PrincipalCodePipelineCI/CDOrquesta todo el flujo de trabajo (pipeline) de integración y entrega continua. Define las etapas (ej. Fuente, Construcción, Despliegue).CodeBuildCI/CDServicio de compilación totalmente gestionado que ejecuta las tareas de construcción, pruebas y empaquetado del código (ej. npm install, serverless deploy).APIBackendEl punto de entrada a la lógica del negocio. Generalmente implementado con API Gateway y AWS Lambda para ejecutar el código del backend (tu lógica CRUD).DynamoDBBase de DatosBase de datos NoSQL de AWS, totalmente gestionada y sin servidor, utilizada para almacenar los datos de la aplicación (los ítems de tu CRUD).
 > Las imágenes viven en `docs/`.
 
 ### Pipeline
@@ -410,7 +410,34 @@ npx serverless@3 remove --stage prod
 │   ├── amplify-overview.png
 │   └── app-ui.png
 └── amplify.yml
-```
+`Conclusiones del Esquema del Proyecto
+1. Arquitectura Full-Stack y Serverless Clara
+El proyecto está claramente dividido en dos componentes principales, lo que es indicativo de una arquitectura Full-Stack moderna, y utiliza Serverless para el backend:
+
+backend/: Contiene la lógica del lado del servidor (src/handler.js) y el archivo de configuración serverless.yml. Esto confirma que el backend se despliega utilizando el Serverless Framework (probablemente a AWS Lambda y API Gateway), siguiendo un modelo Serverless y de microservicio.
+
+frontend/: Contiene los archivos típicos de una aplicación web moderna basada en Vite (por vite.config.js) y React (src/App.jsx). Esto sugiere una aplicación de Single-Page Application (SPA).
+
+2. Adopción de CI/CD Completo y Automatizado
+La presencia de archivos de configuración específicos para AWS y el despliegue automático indican un enfoque robusto en la Integración y Entrega Continua (CI/CD).
+
+.aws/buildspec.yml: Este archivo es fundamental para AWS CodeBuild. Su existencia prueba que el proceso de compilación, prueba y empaquetado del código está completamente automatizado y es ejecutado por los servicios de AWS, lo que garantiza consistencia y fiabilidad en los despliegues.
+
+amplify.yml: Este archivo, junto con la carpeta frontend/, confirma que el hosting y el pipeline del frontend se gestionan a través de AWS Amplify, un servicio que facilita el despliegue continuo de SPAs.
+
+3. Evidencia de Entornos Separados (Dev/Prod)
+La carpeta de documentación (docs/) muestra capturas de pantalla que implican una estricta separación de entornos, lo cual es una práctica recomendada en proyectos maduros:
+
+codebuild-dev-*.png y codebuild-prod-*.png: Muestran que existen pipelines o configuraciones de CodeBuild distintas para los entornos de Desarrollo (Dev) y Producción (Prod).
+
+dynamodb-dev-table.png y dynamodb-prod-table.png: Esto es crítico. Confirma que hay bases de datos DynamoDB separadas para Dev y Prod, lo que evita que las pruebas en desarrollo dañen o contaminen los datos en producción.
+
+4. Enfoque Exhaustivo en la Documentación
+La cantidad y el tipo de imágenes en la carpeta docs/ demuestran que el proyecto valora la documentación y la visibilidad del proceso de despliegue.
+
+pipeline-overview.png, pipeline-execution-summary.png: Documenta visualmente el flujo de CI/CD (CodePipeline).
+
+apigw-resources.png, dynamodb-*.png, amplify-overview.png: Documenta los recursos clave de la infraestructura desplegada, haciendo más fácil el diagnóstico y la comprensión para futuros desarrolladores.``
 
 ---
 
