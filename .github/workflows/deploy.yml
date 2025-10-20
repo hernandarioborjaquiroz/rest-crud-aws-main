@@ -21,7 +21,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-
       - name: 3. Install Project Dependencies
         run: npm install
 
@@ -43,7 +42,6 @@ jobs:
           else
             echo "stage=dev" >> $GITHUB_ENV
           fi
-
       - name: 7. Deploy with Serverless
         run: serverless deploy --stage ${{ env.stage }}
 
