@@ -1,0 +1,11 @@
+{
+  "name": "rest-crud-api",
+  "version": "1.0.0",
+  "main": "src/handler.js",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.632.0",
+    "@aws-sdk/lib-dynamodb": "^3.632.0",
+    "uuid": "^9.0.1"
+  }
+}

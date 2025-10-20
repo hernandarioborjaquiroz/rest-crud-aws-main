@@ -1,0 +1,26 @@
+version: 1
+
+applications:
+  - appRoot: frontend
+    env:
+      variables:
+        VITE_API_URL: https://zl9hibjjmg.execute-api.us-east-1.amazonaws.com/prod
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm -v
+            - node -v
+      
+            - if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
+            - echo "VITE_API_URL=$VITE_API_URL"
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: dist
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*

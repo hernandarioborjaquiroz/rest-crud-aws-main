@@ -1,0 +1,87 @@
+service: rest-crud-api
+frameworkVersion: '3'
+
+custom:
+  suffix: v2
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+
+  environment:
+    TABLE_NAME: ItemsTable-${sls:stage}-${self:custom.suffix}
+
+  iam:
+    role:
+      statements:
+      - Effect: Allow
+        Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:Scan
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        Resource:
+        - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE_NAME}
+
+  stackName: ${self:service}-${sls:stage}-${self:custom.suffix}
+
+functions:
+  createItem:
+    handler: src/handler.createItem
+    events:
+    - http:
+        path: items
+        method: post
+        cors: true
+
+  getItem:
+    handler: src/handler.getItem
+    events:
+    - http:
+        path: items/{id}
+        method: get
+        cors: true
+
+  listItems:
+    handler: src/handler.listItems
+    events:
+    - http:
+        path: items
+        method: get
+        cors: true
+
+  updateItem:
+    handler: src/handler.updateItem
+    events:
+    - http:
+        path: items/{id}
+        method: put
+        cors: true
+
+  deleteItem:
+    handler: src/handler.deleteItem
+    events:
+    - http:
+        path: items/{id}
+        method: delete
+        cors: true
+
+package:
+  individually: true
+
+resources:
+  Resources:
+    ItemsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TABLE_NAME}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        KeySchema:
+        - AttributeName: id
+          KeyType: HASH
