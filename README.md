@@ -15,7 +15,8 @@ Backend con **Serverless Framework** (API Gateway + Lambda + DynamoDB) y fronten
 - [x] Repositorio público con commits frecuentes  
 - [x] **Capturas** de Source/Build/Artifacts/Variables (abajo)
 
----
+---<img width="3000" height="2500" alt="image" src="https://github.com/user-attachments/assets/216b2e3a-aa24-41f2-9de7-cd8fa60e08aa" />
+
 
 ## 🧱 Arquitectura
 
