@@ -1,11 +1,12 @@
-
 name: Deploy-rest-crud-aws-main
+
 on:
   # Ejecuta el flujo de trabajo cuando se haga push en master o dev
   push:
     branches:
       - master
       - dev
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -47,9 +48,7 @@ jobs:
       - name: 7. Deploy with Serverless
         # El comando usa la variable de entorno 'stage' definida en el paso anterior
         run: serverless deploy --stage ${{ env.stage }}
-        env:
-          # Estas variables de entorno deben coincidir con la tabla de la etapa (ej. 'inventory-items-dev')
-          DYNAMODB_TABLE: inventory-items-${{ env.stage }}
+        # ELIMINADO: Ya no se define la variable DYNAMODB_TABLE aquí
           
       - name: 8. Show API Endpoint
         # Muestra el endpoint de la API para la etapa desplegada
